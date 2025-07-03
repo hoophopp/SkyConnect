@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My App</title>
+
+
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --background-color: #f8f9fa;
+      --text-color: #2b2d42;
+      --light-gray: #e9ecef;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --rounded: 12px;
+      --rounded-full: 9999px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #fff;
+      border-bottom: 1px solid var(--light-gray);
+      padding: 12px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 999;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-item {
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      font-size: 15px;
+      padding: 8px 16px;
+      border-radius: var(--rounded-full);
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background-color: var(--light-gray);
+      color: var(--primary-color);
+    }
+
+    .content {
+      padding-top: 80px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 20px 40px;
+    }
+
+    #content div {
+      background: white;
+      border-radius: var(--rounded);
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      text-align: left;
+    }
+
+    #content h2 {
+      color: var(--primary-color);
+      margin-top: 20px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    #content p {
+      margin-bottom: 12px;
+      color: var(--text-color);
+    }
+
+    #content img {
+      border-radius: var(--rounded);
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      object-fit: cover;
+    }
+  </style>
+
+
+</head>
+<body>
+
+  <div class="navbar">
+    <a class="nav-item" href="/home">🏠 Home</a>
+    <a class="nav-item" href="/profile">👤 Profile</a>
+    <a href="/postpage"  class="nav-item"> PostPage</a>
+    <a class="nav-item" href="/settings">⚙️ Paramètre</a>
+  </div>
+
+  <div class="content" id="content">
+  </div>
+  <script>
+   const divcontent = document.getElementById('content');
+
+    fetch('/home/data', {
+      headers: {
+        'Authorization': 'Bearer ' + document.cookie.split('token=')[1]
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      const divone = document.createElement('div');
+      const post = data.data;
+
+      divone.innerHTML = `
+        ${post.moreinfo?.imagurl ? `<img src="/uploads/${post.moreinfo.imagurl}" width="150">` : ''}
+        <p>${post.username}</p> 
+        <h2>${post.post.title}</h2>
+        <p>${post.post.content}</p>
+      `;
+      divcontent.appendChild(divone);
+    })
+    .catch(err => console.log('Error: ', err.message));
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refresh Token Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --background-color: #f8f9fa;
+      --text-color: #2b2d42;
+      --light-gray: #e9ecef;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --rounded: 12px;
+      --rounded-full: 9999px;
+    }
+
+    body {
+      font-family: 'Inter', 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    button {
+      padding: 12px 24px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--rounded);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    #result {
+      margin-top: 24px;
+      padding: 16px;
+      background: white;
+      border-radius: var(--rounded);
+      box-shadow: var(--shadow-sm);
+      max-width: 600px;
+      width: 100%;
+      white-space: pre-wrap;
+      word-break: break-all;
+      text-align: left;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔁 Refresh Access Token</h2>
+  <button onclick="refresh()">Refresh Now</button>
+  <p id="result"></p>
+
+  <script>
+    async function refresh() {
+      const result = document.getElementById('result');
+      result.style.color = ''; // Reset color
+      result.innerText = 'Refreshing...';
+
+      try {
+        const res = await fetch('/api/refresh', {
+          method: 'POST',
+          credentials: 'include' // send the cookie!
+        });
+
+        if (!res.ok) {
+          result.style.color = '#e63946';
+          result.innerText = 'Failed: HTTP ' + res.status;
+          return;
+        }
+
+        const data = await res.json();
+        result.style.color = '#2a9d8f';
+        result.innerText = '✅ New Access Token:\n\n' + data.token;
+      } catch (err) {
+        result.style.color = '#e63946';
+        result.innerText = '❌ Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>

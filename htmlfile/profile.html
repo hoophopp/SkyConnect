@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --background-color: #f8f9fa;
+            --text-color: #2b2d42;
+            --light-gray: #e9ecef;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --rounded: 12px;
+            --rounded-full: 50%;
+        }
+
+        body {
+            font-family: 'Inter', 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: white;
+            border-bottom: 1px solid var(--light-gray);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: var(--rounded);
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 32px 0 24px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        #profileData {
+            background: white;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 32px;
+            border-radius: var(--rounded);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+
+        #profileData p {
+            margin: 16px 0;
+            font-size: 18px;
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        #profileData img {
+            border-radius: var(--rounded-full);
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            margin: 20px auto;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-info {
+            background: var(--light-gray);
+            padding: 16px;
+            border-radius: var(--rounded);
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="nav-item" href="/home">🏠 Home</a>
+        <a class="nav-item" href="/profile">👤 Profile</a>
+        <a class="nav-item" href="/settings">⚙️ Paramètre</a>
+    </div>
+    
+    <h1>Your Profile 💖</h1>
+    
+    <div id="profileData"></div>
+
+    <script>
+        fetch('/profile', {
+            headers: {
+                'Authorization': 'Bearer ' + document.cookie.split('token=')[1]
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const profile = data.data;
+            document.getElementById('profileData').innerHTML = `
+                ${profile.moreinfo?.imagurl ? 
+                    `<img src="/uploads/${profile.moreinfo.imagurl}" alt="Profile Picture">` : 
+                    `<div style="width:150px;height:150px;border-radius:50%;background:#ddd;margin:20px auto;display:flex;align-items:center;justify-content:center;font-size:60px;">👤</div>`
+                }
+                <div class="profile-info">
+                    <p>👤 <strong>Username:</strong> ${profile.username}</p>
+                    <p>📧 <strong>Email:</strong> ${profile.email}</p>
+                    <p>📝 <strong>Bio:</strong> ${profile.moreinfo?.bio || 'Not specified'}</p>
+                    <p>🎂 <strong>Age:</strong> ${profile.moreinfo?.age || 'Not specified'}</p>
+                </div>
+            `;
+        })
+        .catch(err => {
+            document.getElementById('profileData').innerHTML = `
+                <div style="color:#e63946;padding:20px;">
+                    Error loading profile data. Please try again.
+                </div>
+            `;
+            console.error('Error:', err);
+        });
+    </script>
+</body>
+</html>
