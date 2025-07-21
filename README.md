@@ -51,5 +51,5 @@ These pages are linked with corresponding routes on the server and communicate w
 ## Author
 
 Created by Nermine Kirouane  
-GitHub: https://github.com/hoophopp
+ > GitHub: https://github.com/hoophopp
 
